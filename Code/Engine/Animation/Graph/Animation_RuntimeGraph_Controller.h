@@ -27,6 +27,7 @@ namespace EE::Animation
 
         public:
 
+            // 定义一个控制参数(名字和索引), 相当于命名某个图
             template<typename ParameterType>
             class ControlParameter final
             {
@@ -84,7 +85,7 @@ namespace EE::Animation
                 }
 
             private:
-
+                // 名字和索引
                 StringID                        m_ID;
                 int16_t                         m_index = InvalidIndex;
             };

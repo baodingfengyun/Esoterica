@@ -28,6 +28,7 @@ namespace EE
 
     //-------------------------------------------------------------------------
 
+    // 用作 ID 的数字字符串
     class EE_SYSTEM_API StringID
     {
     public:
@@ -62,7 +63,7 @@ namespace EE
         inline bool operator!=( StringID const& rhs ) const { return m_ID != rhs.m_ID; }
 
     private:
-
+        // ID 数值
         uint32_t                            m_ID = 0;
     };
 }

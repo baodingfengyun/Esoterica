@@ -19,14 +19,18 @@ namespace EE::AI
 
     //-------------------------------------------------------------------------
 
+    // 动画控制器
     class AnimationController final : public Animation::GraphController
     {
     public:
 
+        // 构造函数(动画图组件, 骨架组件)
         AnimationController( Animation::AnimationGraphComponent* pGraphComponent, Render::SkeletalMeshComponent* pMeshComponent );
 
+        // 设置角色状态
         void SetCharacterState( CharacterAnimationState state );
 
+        // EE开发工具可获取控制器名字
         #if EE_DEVELOPMENT_TOOLS
         virtual char const* GetName() const { return "AI Graph Controller"; }
         #endif

@@ -89,6 +89,7 @@ using nullptr_t = decltype( nullptr );
 
 namespace EE
 {
+    // 非法索引值-1 很常用
     #define InvalidIndex -1
 
     //-------------------------------------------------------------------------

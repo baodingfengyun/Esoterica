@@ -23,8 +23,11 @@ namespace EE::AI
 
     private:
 
+        // 运动速度
         ControlParameter<float>     m_speedParam = ControlParameter<float>( "Locomotion_Speed" );
+        // 运动前进方向
         ControlParameter<Vector>    m_headingParam = ControlParameter<Vector>( "Locomotion_Heading" );
+        // 面向方向
         ControlParameter<Vector>    m_facingParam = ControlParameter<Vector>( "Locomotion_Facing" );
     };
 }

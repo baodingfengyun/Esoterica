@@ -6,7 +6,7 @@
 #include "System/Types/Event.h"
 
 //-------------------------------------------------------------------------
-// Entity
+// Entity 实体是 组件 和 系统 集合的容器
 //-------------------------------------------------------------------------
 // This is container for a set of components and systems
 //
@@ -45,6 +45,10 @@ namespace EE
 
     //-------------------------------------------------------------------------
 
+    //-------------------------------------------------------------------------
+    // 实体的设计是权衡了 OOP 和 ECS 两种数据构造模式后的结果.
+    // 实体有自己的数据, 组件, 系统.
+    //-------------------------------------------------------------------------
     class EE_ENGINE_API Entity : public IRegisteredType
     {
         EE_REGISTER_TYPE( Entity );
@@ -58,21 +62,25 @@ namespace EE
 
         using SystemUpdateList = TVector<EntitySystem*>;
 
+        // 实体内部状态改变行为
         // Entity internal state change actions
         struct EntityInternalStateAction
         {
             enum class Type
             {
-                Unknown,
-                CreateSystem,
-                DestroySystem,
-                AddComponent,
-                DestroyComponent,
-                WaitForComponentUnregistration,
+                Unknown,                // 未知
+                CreateSystem,           // 创建系统
+                DestroySystem,          // 销毁系统
+                AddComponent,           // 添加组件
+                DestroyComponent,       // 销毁组件
+                WaitForComponentUnregistration,     // 等待解除注册组件
             };
 
+            // 此指针可以指向一个系统, 也可以指向一个组件. 但是不能改变指向.
             void const*                         m_ptr = nullptr;            // Can either be ptr to a system or a component
+            // 父组件 ID
             ComponentID                         m_parentComponentID;        // Contains the ID of the component
+            // 行为类型
             Type                                m_type = Type::Unknown;     // Type of action
         };
 
@@ -93,22 +101,27 @@ namespace EE
 
     public:
 
+        // 定义实体状态
         enum class Status : uint8_t
         {
-            Unloaded = 0,
-            Loaded,
-            Initialized,
+            Unloaded = 0,   // 未加载
+            Loaded,         // 已加载
+            Initialized,    // 已初始化
         };
 
+        // 空间依附规则
         enum class SpatialAttachmentRule
         {
-            KeepWorldTransform,
-            KeepLocalTranform
+            KeepWorldTransform,     // 保持世界位置
+            KeepLocalTranform       // 保持本地位置
         };
 
+
+        // 实体上的组件或系统增加或删除时的事件处理
         // Event that's fired whenever a component/system is actually added or removed
         static TEventHandle<Entity*> OnEntityUpdated() { return s_entityUpdatedEvent; }
 
+        // 实体内部状态更新时的事件处理
         // Event that's fired whenever an entities internal state changes and it requires an state update
         static TEventHandle<Entity*> OnEntityInternalStateUpdated() { return s_entityInternalStateUpdatedEvent; }
 
@@ -361,23 +374,41 @@ namespace EE
 
     protected:
 
+        //----------- 共计 15 个参数, 描述了一个树形实体结构, 每个实体都可以找到自己的父节点和子节点, 以及当前实体的组件和系统, 位置,状态,更新数据,ID 等.
+        // 所有这些都是为了在场景中构建一个可以交互的整体实体(例如, 一把枪, 可以由很多组件构成, 也属于某个角色实体)
+
+        //--- 全局唯一 ID
         EntityID                                        m_ID = EntityID::Generate();                                            // The unique ID of this entity ( globally unique and generated at runtime )
+        //--- 分组 ID
         EntityMapID                                     m_mapID;                                                                // The ID of the map that owns this entity
+        //--- 一个分组范围内唯一的名字
         EE_REGISTER StringID                            m_name;                                                                 // The name of the entity, only unique within the context of a map
+        //--- 实体当前状态
         Status                                          m_status = Status::Unloaded;
+        //--- 更新注册状态
         UpdateRegistrationStatus                        m_updateRegistrationStatus = UpdateRegistrationStatus::Unregistered;    // Is this entity registered for frame updates
 
+        //--- 包含的所有系统
         TVector<EntitySystem*>                          m_systems;
+        //--- 包含的所有组件
         TVector<EntityComponent*>                       m_components;
+        //--- 系统更新列表
         SystemUpdateList                                m_systemUpdateLists[(int8_t) UpdateStage::NumStages];
 
+        //--- 世界位置组件
         SpatialEntityComponent*                         m_pRootSpatialComponent = nullptr;                                      // This spatial component defines our world position
+        //--- 包含的子实体(树形结构)
         TVector<Entity*>                                m_attachedEntities;                                                     // The list of entities that are attached to this entity
+        //--- 父节点(实体)
         Entity*                                         m_pParentSpatialEntity = nullptr;                                       // The parent entity we are attached to
+        //--- 父节点通信名字
         EE_EXPOSE StringID                              m_parentAttachmentSocketID;                                             // The socket that we are attached to on the parent
+        //--- 实际的组件间关系是否被创建
         bool                                            m_isSpatialAttachmentCreated = false;                                   // Has the actual component-to-component attachment been created
 
+        //--- 实体内部状态改变的预置行为
         TVector<EntityInternalStateAction>              m_deferredActions;                                                      // The set of internal entity state changes that need to be executed
+        //--- 线程安全锁
         Threading::RecursiveMutex                       m_internalStateMutex;                                                   // A mutex that needs to be lock due to internal state changes
     };
- }
+}
