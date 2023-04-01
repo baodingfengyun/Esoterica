@@ -65,6 +65,9 @@ namespace EE::AI
 
     public:
 
+        //----------------- 这里定义了实体世界更新上下文, 物理场景, 导航网格, AI 组件,
+        //----------------- 物理角色组件, 角色物理管理器, 动画管理器, 实体组件列表
+
         EntityWorldUpdateContext const*             m_pEntityWorldUpdateContext = nullptr;
         Physics::Scene*                             m_pPhysicsScene = nullptr;
         Navmesh::NavmeshWorldSystem*                m_pNavmeshSystem = nullptr;
