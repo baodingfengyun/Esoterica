@@ -77,7 +77,7 @@ namespace EE::AI
     };
 
     //-------------------------------------------------------------------------
-    // An AI Action
+    // An AI Action 一个 AI 动作,执行实际的任务(移动,播放动画等等),为了达到某个目标.
     //-------------------------------------------------------------------------
     // A specific actuation task (move, play anim, etc...) that a behavior requests to help achieve its goal
     // Each derived action needs to define a StartInternal( ActionContext const& ctx, ARGS... ) function that will start the AI action
@@ -86,6 +86,7 @@ namespace EE::AI
     {
     public:
 
+        // 动作状态: 运行中, 完成, 失败
         enum class Status : uint8_t
         {
             Running,
@@ -99,7 +100,7 @@ namespace EE::AI
 
 
     //-------------------------------------------------------------------------
-    // An AI behavior
+    // An AI behavior 一个 AI 行为,例如一系列顺序执行达到某个目标的动作
     //-------------------------------------------------------------------------
     // This defines a behavior i.e. a sequence of actions to achieve a specified goal
 
@@ -107,6 +108,7 @@ namespace EE::AI
     {
     public:
 
+        // 行为状态: 运行中, 完成, 失败
         enum class Status : uint8_t
         {
             Running,
@@ -114,6 +116,7 @@ namespace EE::AI
             Failed
         };
 
+        // 停止原因: 已完成, 被中断
         enum class StopReason : uint8_t
         {
             Completed,
@@ -175,7 +178,7 @@ namespace EE::AI
         virtual void StopInternal( BehaviorContext const& ctx, StopReason reason ) = 0;
 
     private:
-
+        // 是否活跃
         bool    m_isActive = false;
     };
 }

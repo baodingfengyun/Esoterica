@@ -17,6 +17,7 @@ namespace EE::AI
     public:
 
         bool IsRunning() const;
+        // 设置目标位置
         void Start( BehaviorContext const& ctx, Vector const& goalPosition );
         void Update( BehaviorContext const& ctx );
 
