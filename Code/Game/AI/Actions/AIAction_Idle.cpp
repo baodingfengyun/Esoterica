@@ -8,6 +8,7 @@
 
 namespace EE::AI
 {
+    // 启动
     void IdleAction::Start( BehaviorContext const& ctx )
     {
         ctx.m_pAnimationController->SetCharacterState( CharacterAnimationState::Locomotion );

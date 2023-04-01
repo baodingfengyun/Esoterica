@@ -26,6 +26,7 @@ namespace EE::AI
 
     //-------------------------------------------------------------------------
     // The context for all AI behaviors
+    // 所有 AI 行为的上下文 (结构体)
     //-------------------------------------------------------------------------
     // Provides the common set of systems and components needed for AI behaviors/actions
 
